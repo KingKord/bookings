@@ -1,0 +1,28 @@
+.my-footer {
+    height: 5em;
+    background-color: #163b65;
+    margin-top: 1.5em;
+    padding: 1em;
+    color: #FFFFFF;
+    font-size: 80%;
+}
+
+.room-image {
+    max-width: 50%;
+}
+
+.notie-container {
+    box-shadow: none;
+}
+
+.costil {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.datepicker {
+    z-index: 100000;
+}
+.swal2-actions {
+    z-index: 0;
+}
