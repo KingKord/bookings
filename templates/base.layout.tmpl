@@ -192,11 +192,10 @@
                     focusConfirm: false,
                     showCancelButton: true,
                     willOpen: () => {
-                        const elem = document.getElementById('reservation-dates-modal');
-                        const rp = new DateRangePicker(elem, {
-                            format: "dd-mm-yyyy",
-                            showOnFocus: true,
-                        })
+                        // if willOpen fun is defined we call that fun
+                        if (c.willOpen !== undefined) {
+                            c.willOpen()
+                        }
                     },
                     preConfirm: () => {
                         return [
@@ -205,8 +204,10 @@
                         ]
                     },
                     didOpen: () => {
-                        document.getElementById('start').removeAttribute('disabled')
-                        document.getElementById('end').removeAttribute('disabled')
+                        // and also with didOpen
+                        if (c.didOpen !== undefined) {
+                            c.didOpen();
+                        }
                     }
                 })
 

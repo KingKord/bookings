@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/KingKord/bookings/pkg/config"
-	"github.com/KingKord/bookings/pkg/handlers"
-	"github.com/KingKord/bookings/pkg/render"
+	"github.com/KingKord/bookings/internal/config"
+	"github.com/KingKord/bookings/internal/handlers"
+	"github.com/KingKord/bookings/internal/render"
 	"github.com/alexedwards/scs/v2"
 	"log"
 	"net/http"

@@ -3,8 +3,8 @@ package render
 import (
 	"bytes"
 	"fmt"
-	"github.com/KingKord/bookings/pkg/config"
-	"github.com/KingKord/bookings/pkg/models"
+	"github.com/KingKord/bookings/internal/config"
+	"github.com/KingKord/bookings/internal/models"
 	"github.com/justinas/nosurf"
 	"html/template"
 	"log"

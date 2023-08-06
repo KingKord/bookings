@@ -3,9 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/KingKord/bookings/pkg/config"
-	"github.com/KingKord/bookings/pkg/models"
-	"github.com/KingKord/bookings/pkg/render"
+	"github.com/KingKord/bookings/internal/config"
+	"github.com/KingKord/bookings/internal/models"
+	"github.com/KingKord/bookings/internal/render"
 	"log"
 	"net/http"
 )

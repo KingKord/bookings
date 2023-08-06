@@ -5,20 +5,25 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <img src="/static/images/generals-quarters.png" class="img-fluid img-thumbnail mx-auto d-block room-image" alt="room image">
+                <img src="/static/images/generals-quarters.png"
+                     class="img-fluid img-thumbnail mx-auto d-block room-image" alt="room image">
             </div>
         </div>
         <div class="row">
             <div class="col">
                 <h1 class="text-center mt-4">General's Quarters</h1>
                 <p>
-                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
+                    to
                     remember.
-                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
+                    to
                     remember.
-                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
+                    to
                     remember.
-                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation
+                    to
                     remember.
                 </p>
             </div>
@@ -52,14 +57,35 @@
 
             </div>
         </form>
-        `
+        `;
 
             attention.custom({
                 msg: html,
                 title: "Choose your dates",
+                willOpen: () => {
+                    const elem = document.getElementById('reservation-dates-modal');
+                    const rp = new DateRangePicker(elem, {
+                        format: "dd-mm-yyyy",
+                        showOnFocus: true,
+                    })
+                },
+                didOpen: () => {
+                    document.getElementById('start').removeAttribute('disabled')
+                    document.getElementById('end').removeAttribute('disabled')
+                },
                 callback: function (result) {
                     console.log("called");
-                    fetch('/search-availability-json')
+
+                    let form = document.getElementById("check-availability-form");
+                    let formData = new FormData(form);
+                    formData.append("csrf_token", "{{.CSRFToken}}");
+
+                    fetch('/search-availability-json'
+                        , {
+                            method: "post",
+                            body: formData,
+                        }
+                    )
                         .then(response => response.json())
                         .then(data => {
                             console.log(data);
