@@ -11,3 +11,10 @@ type TemplateData struct {
 	Warning   string
 	Error     string
 }
+
+type Reservation struct {
+	FirstName string
+	LastName  string
+	Email     string
+	Phone     string
+}
