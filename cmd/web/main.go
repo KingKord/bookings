@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"github.com/KingKord/bookings/internal/config"
 	"github.com/KingKord/bookings/internal/handlers"
+	"github.com/KingKord/bookings/internal/models"
 	"github.com/KingKord/bookings/internal/render"
 	"github.com/alexedwards/scs/v2"
 	"log"
@@ -36,7 +38,7 @@ func main() {
 
 func run() error {
 
-	//gob.Register(models.Reservation{})
+	gob.Register(models.Reservation{})
 	// change this to true when in production
 	app.InProduction = false
 	// scs is the external package that helps us to work with sessions
