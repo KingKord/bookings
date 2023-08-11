@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"github.com/KingKord/bookings/internal/config"
 	"github.com/KingKord/bookings/internal/handlers"
+	"github.com/KingKord/bookings/internal/helpers"
 	"github.com/KingKord/bookings/internal/models"
 	"github.com/KingKord/bookings/internal/render"
 	"github.com/alexedwards/scs/v2"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -17,6 +19,8 @@ const portNumber = ":8080"
 
 var app config.AppConfig
 var session *scs.SessionManager
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 // main is the main application function
 func main() {
@@ -41,6 +45,13 @@ func run() error {
 	gob.Register(models.Reservation{})
 	// change this to true when in production
 	app.InProduction = false
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
+
 	// scs is the external package that helps us to work with sessions
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -61,7 +72,6 @@ func run() error {
 	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
-	//http.HandleFunc("/", handlers.Repo.Home)
-	//http.HandleFunc("/about", handlers.Repo.About)
+	helpers.NewHelpers(&app)
 	return nil
 }
