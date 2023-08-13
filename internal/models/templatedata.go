@@ -1,5 +1,7 @@
 package models
 
+import "github.com/KingKord/bookings/internal/forms"
+
 // TemplateData holds data sent from handlers to template
 type TemplateData struct {
 	StringMap map[string]string
@@ -10,6 +12,7 @@ type TemplateData struct {
 	Flash     string
 	Warning   string
 	Error     string
+	Form      *forms.Form
 }
 
 type Reservation struct {

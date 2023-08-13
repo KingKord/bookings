@@ -13,6 +13,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"time"
 )
@@ -26,6 +27,11 @@ func getRoutes() http.Handler {
 	gob.Register(models.Reservation{})
 	// change this to true when in production
 	app.InProduction = false
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 	// scs is the external package that helps us to work with sessions
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -62,6 +68,7 @@ func getRoutes() http.Handler {
 	mux.Get("/contact", Repo.Contact)
 
 	mux.Get("/make-reservation", Repo.Reservation)
+	mux.Post("/make-reservation", Repo.PostReservation)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
