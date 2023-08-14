@@ -14,10 +14,3 @@ type TemplateData struct {
 	Error     string
 	Form      *forms.Form
 }
-
-type Reservation struct {
-	FirstName string
-	LastName  string
-	Email     string
-	Phone     string
-}
