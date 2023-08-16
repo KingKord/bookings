@@ -36,7 +36,7 @@ var theTests = []struct {
 		{key: "email", value: "me@here.com"},
 		{key: "phone", value: "555-555-5555"},
 	}, http.StatusOK},
-	{"make-reservation", "/make-reservation", "Post", []postData{
+	{"make-reservation", "/make-reservation", "GET", []postData{
 		{key: "first_name", value: "John"},
 		{key: "last_name", value: "Smith"},
 		{key: "email", value: "me@here.com"},

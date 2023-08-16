@@ -5,6 +5,7 @@ import (
 	"github.com/KingKord/bookings/internal/config"
 	"github.com/KingKord/bookings/internal/models"
 	"github.com/alexedwards/scs/v2"
+	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -18,6 +19,11 @@ func TestMain(m *testing.M) {
 	gob.Register(models.Reservation{})
 	// change this to true when in production
 	testApp.InProduction = false
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	testApp.InfoLog = infoLog
+
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	testApp.ErrorLog = errorLog
 	// scs is the external package that helps us to work with sessions
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
