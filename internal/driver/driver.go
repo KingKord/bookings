@@ -51,7 +51,7 @@ func testDB(d *sql.DB) error {
 
 // NewDatabase creates a new database for application
 func NewDatabase(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("pgx", "host=localhost port=5432 dbname=test_connect user=postgres password=5632")
+	db, err := sql.Open("pgx", dsn)
 	if err != nil {
 		return nil, err
 	}

@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/KingKord/bookings/internal/config"
+	"github.com/KingKord/bookings/internal/driver"
 	"github.com/KingKord/bookings/internal/forms"
 	"github.com/KingKord/bookings/internal/helpers"
 	"github.com/KingKord/bookings/internal/models"
 	"github.com/KingKord/bookings/internal/render"
+	"github.com/KingKord/bookings/internal/repository"
+	"github.com/KingKord/bookings/internal/repository/dbrepo"
 	"net/http"
 )
 
@@ -17,12 +20,14 @@ var Repo *Repository
 // Repository is the repository type
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 // NewRepo creates a new repository
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
+		DB:  dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 
