@@ -37,7 +37,7 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-// Replace for ResponseWriter for test RenderTemplate
+// Replace for ResponseWriter for test Template
 type myWriter struct{}
 
 func (tw *myWriter) Header() http.Header {
