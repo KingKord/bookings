@@ -2,12 +2,15 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"github.com/KingKord/bookings/internal/driver"
 	"github.com/KingKord/bookings/internal/models"
 	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -584,6 +587,116 @@ func TestRepository_BookRoom(t *testing.T) {
 		t.Errorf("BookRoom handler failure in search room by ID: got %d, wanted %d", rr.Code, http.StatusTemporaryRedirect)
 	}
 
+}
+
+func TestRepository_AvailabilityJSON(t *testing.T) {
+	// first case - rooms are not available
+	reqBody := "start=01-01-2050"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=02-01-2050")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
+
+	req, _ := http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+
+	ctx := getCtx(req)
+	req = req.WithContext(ctx)
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(Repo.AvailabilityJSON)
+
+	handler.ServeHTTP(rr, req)
+
+	var j jsonResponse
+	err := json.Unmarshal([]byte(rr.Body.String()), &j)
+	if err != nil {
+		t.Errorf("failed to parse json")
+	}
+	if j.OK {
+		t.Errorf("Expected not availability, got message: %s", j.Message)
+	}
+
+	// second case - rooms are available
+	reqBody = "start=01-01-3000"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=02-01-3000")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr = httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	err = json.Unmarshal([]byte(rr.Body.String()), &j)
+	if err != nil {
+		t.Errorf("failed to parse json")
+	}
+
+	if !j.OK {
+		t.Errorf("Expected availability, got message: %t", j.OK)
+	}
+
+	// test for missing body in request
+	reqBody = "start=01-01-2050"
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "end=02-01-2050")
+	reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=100")
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", strings.NewReader(reqBody))
+
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr = httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	err = json.Unmarshal([]byte(rr.Body.String()), &j)
+	if err != nil {
+		t.Errorf("failed to parse json")
+	}
+
+	if j.Message != "Error connecting to database" {
+		t.Errorf("expected response message %s, but got %s", "Error connecting to database", j.Message)
+	}
+
+	// test for inability get data from database
+
+	req, _ = http.NewRequest("POST", "/search-availability-json", nil)
+
+	ctx = getCtx(req)
+	req = req.WithContext(ctx)
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	rr = httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+
+	err = json.Unmarshal([]byte(rr.Body.String()), &j)
+	if err != nil {
+		t.Errorf("failed to parse json")
+	}
+
+	if j.Message != "Internal server error" {
+		t.Errorf("expected response message %s, but got %s", "Internal server error", j.Message)
+	}
+
+}
+
+func TestNewRepo(t *testing.T) {
+	var db driver.DB
+	testRepo := NewRepo(&app, &db)
+
+	if reflect.TypeOf(testRepo).String() != "*handlers.Repository" {
+		t.Errorf("Did not get correct type from NewRepo: got %s, wanted *Repository", reflect.TypeOf(testRepo).String())
+	}
 }
 
 func getCtx(req *http.Request) context.Context {
