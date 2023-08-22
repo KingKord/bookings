@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/KingKord/bookings/internal/models"
+	"github.com/go-chi/chi/v5"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -396,7 +397,7 @@ func TestRepository_ReservationSummary(t *testing.T) {
 		UpdatedAt: time.Now(),
 		Room:      room,
 	}
-	req, _ := http.NewRequest("GET", "reservation-summary", nil)
+	req, _ := http.NewRequest("GET", "/reservation-summary", nil)
 	ctx := getCtx(req)
 	req = req.WithContext(ctx)
 
@@ -410,7 +411,7 @@ func TestRepository_ReservationSummary(t *testing.T) {
 	}
 
 	// test for invalid session
-	req, _ = http.NewRequest("GET", "reservation-summary", nil)
+	req, _ = http.NewRequest("GET", "/reservation-summary", nil)
 	ctx = getCtx(req)
 	req = req.WithContext(ctx)
 
@@ -421,6 +422,72 @@ func TestRepository_ReservationSummary(t *testing.T) {
 		t.Errorf("Reservation handler returned wrong response code: got %d, wanted %d", rr.Code, http.StatusTemporaryRedirect)
 	}
 
+}
+
+func TestRepository_ChooseRoom(t *testing.T) {
+	layout := "02-01-2006"
+	startDate, _ := time.Parse(layout, "01-01-2050")
+	endDate, _ := time.Parse(layout, "02-01-2050")
+
+	reservation := models.Reservation{
+		StartDate: startDate,
+		EndDate:   endDate,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	req, _ := http.NewRequest("GET", "/choose-room/{id}", nil)
+
+	rctx := chi.NewRouteContext()
+	rctx.URLParams.Add("id", "1")
+
+	ctx := getCtx(req)
+
+	req = req.WithContext(context.WithValue(ctx, chi.RouteCtxKey, rctx))
+
+	rr := httptest.NewRecorder()
+	session.Put(ctx, "reservation", reservation)
+
+	handler := http.HandlerFunc(Repo.ChooseRoom)
+	handler.ServeHTTP(rr, req)
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("Reservation handler returned wrong response code: got %d, wanted %d", rr.Code, http.StatusSeeOther)
+	}
+
+	// test invalid room ID
+	req, _ = http.NewRequest("GET", "/choose-room/{id}", nil)
+
+	rctx = chi.NewRouteContext()
+	rctx.URLParams.Add("id", "invalid")
+
+	ctx = getCtx(req)
+
+	req = req.WithContext(context.WithValue(ctx, chi.RouteCtxKey, rctx))
+
+	rr = httptest.NewRecorder()
+	session.Put(ctx, "reservation", reservation)
+
+	handler.ServeHTTP(rr, req)
+	if rr.Code != http.StatusTemporaryRedirect {
+		t.Errorf("Reservation handler returned wrong response code: got %d, wanted %d", rr.Code, http.StatusTemporaryRedirect)
+	}
+
+	// test invalid session
+	req, _ = http.NewRequest("GET", "/choose-room/{id}", nil)
+
+	rctx = chi.NewRouteContext()
+	rctx.URLParams.Add("id", "1")
+
+	ctx = getCtx(req)
+
+	req = req.WithContext(context.WithValue(ctx, chi.RouteCtxKey, rctx))
+
+	rr = httptest.NewRecorder()
+
+	handler.ServeHTTP(rr, req)
+	if rr.Code != http.StatusTemporaryRedirect {
+		t.Errorf("Reservation handler returned wrong response code: got %d, wanted %d", rr.Code, http.StatusTemporaryRedirect)
+	}
 }
 
 func getCtx(req *http.Request) context.Context {
