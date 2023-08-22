@@ -39,7 +39,18 @@ func (m *testDBRepo) SearchAvailabilityByDates(start, end time.Time, roomID int)
 func (m testDBRepo) SearchAvailabilityForAllRooms(start, end time.Time) ([]models.Room, error) {
 
 	var rooms []models.Room
-
+	if start.Year() == 3000 {
+		room := models.Room{
+			ID:        1,
+			RoomName:  "General's Quarters",
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
+		rooms = append(rooms, room)
+		return rooms, nil
+	} else if start.Year() == 3002 {
+		return rooms, errors.New("some error)")
+	}
 	return rooms, nil
 
 }
