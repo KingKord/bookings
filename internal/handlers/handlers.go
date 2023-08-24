@@ -408,7 +408,7 @@ func (m *Repository) BookRoom(w http.ResponseWriter, r *http.Request) {
 	}
 	endDate, err := time.Parse(layout, ed)
 	if err != nil {
-		m.App.Session.Put(r.Context(), "error", "can't parse start date")
+		m.App.Session.Put(r.Context(), "error", "can't parse end date")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
@@ -450,8 +450,12 @@ func (m *Repository) PostShowLogin(w http.ResponseWriter, r *http.Request) {
 
 	form := forms.New(r.PostForm)
 	form.Required("email", "password")
+	form.IsEmail(email)
 	if !form.Valid() {
-		// TODO - take user back to page
+		render.Template(w, r, "login.page.tmpl", &models.TemplateData{
+			Form: form,
+		})
+		return
 	}
 
 	id, _, err := m.DB.Authenticate(email, password)
