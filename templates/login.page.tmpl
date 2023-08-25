@@ -8,14 +8,17 @@
 
                 <form action="/user/login" method="post" novalidate>
                     <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
+
                     <div class="form-group mt-2">
-                        <label for="email">Email</label>
+                        <label for="email">Email:</label>
                         {{with .Form.Errors.Get "email"}}
                             <label class="text-danger">{{.}}</label>
                         {{end }}
-
-                        <input type="text" name="email" id="email" autocomplete="off" value=""
-                               class="form-control {{ with .Form.Errors.Get "email" }} is-invalid {{ end }}" required>
+                        <input type="email" name="email" id="email"
+                               class="form-control {{ with .Form.Errors.Get "email" }}
+                            is-invalid
+                        {{ end }}" required autocomplete="off"
+                               value="">
                     </div>
                     <div class="form-group mt-2">
                         <label for="password">Password</label>

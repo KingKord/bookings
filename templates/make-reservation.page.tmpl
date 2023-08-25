@@ -17,7 +17,9 @@
                 </p>
 
 
-                <form action="/make-reservation" method="post" novalidate class="needs-validation">
+                <form action="/make-reservation" method="post" novalidate
+{{/*                      class="needs-validation"*/}}
+                >
                     <input type="hidden" name="csrf_token" value="{{ .CSRFToken }}">
                     <input type="hidden" name="start_date" value="{{ index .StringMap "start_date" }}">
                     <input type="hidden" name="end_date" value="{{ index .StringMap "end_date" }}">
@@ -54,7 +56,7 @@
                             <label class="text-danger">{{.}}</label>
                         {{end }}
                         <input type="email" name="email" id="email"
-                               class="form-control {{ with .Form.Errors.Get "first_name" }}
+                               class="form-control {{ with .Form.Errors.Get "email" }}
                             is-invalid
                         {{ end }}" required autocomplete="off"
                                value="{{$res.Email}}">
