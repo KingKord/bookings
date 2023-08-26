@@ -49,11 +49,21 @@
                         <a class="nav-link" href="/contact" tabindex="-1" aria-disabled="true">Contact</a>
                     </li>
                     <li class="nav-item">
+
                         {{ if eq .IsAuthenticated 1  }}
-                            <a class="nav-link" href="/user/logout" tabindex="-1" aria-disabled="true">Logout</a>
-                        {{ else }}
-                            <a class="nav-link" href="/user/login" tabindex="-1" aria-disabled="true">Login</a>
-                        {{ end }}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <li><a class="dropdown-item" href="/admin/dashboard">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="/user/logout">Logout</a></li>
+                                </ul>
+                            </li>
+                    {{ else }}
+                        <a class="nav-link" href="/user/login" tabindex="-1" aria-disabled="true">Login</a>
+                    {{ end }}
                     </li>
                 </ul>
             </div>
@@ -87,13 +97,12 @@
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.3/dist/js/datepicker-full.min.js"></script>
     <script src="https://unpkg.com/notie"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/static/js/app.js" ></script>
+    <script src="/static/js/app.js"></script>
     {{block "js" .}}
 
     {{end}}
     <script>
         let attention = Prompt();
-
 
 
         (function () {
@@ -115,8 +124,6 @@
                     }, false)
                 })
         })()
-
-
 
 
         function notify(msg, msgType) {
@@ -146,7 +153,6 @@
         {{ with .Warning }}
         notify("{{.}}", "warning")
         {{ end }}
-
 
 
     </script>
