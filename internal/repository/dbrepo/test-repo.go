@@ -102,7 +102,7 @@ func (m *testDBRepo) GetReservationByID(id int) (models.Reservation, error) {
 	return res, nil
 }
 
-func (m *testDBRepo) UpdateReservation(u models.User) error {
+func (m *testDBRepo) UpdateReservation(u models.Reservation) error {
 	return nil
 }
 
