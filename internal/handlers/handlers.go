@@ -120,6 +120,8 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	reservation.Phone = r.Form.Get("phone")
 	reservation.Email = r.Form.Get("email")
 
+	log.Printf("start date is %s", reservation.StartDate)
+	log.Printf("end date is %s", reservation.EndDate)
 	form := forms.New(r.PostForm)
 
 	form.Required("first_name", "last_name", "email")
@@ -129,10 +131,14 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := make(map[string]interface{})
 		data["reservation"] = reservation
+		stringMap := make(map[string]string)
+		stringMap["start_date"] = reservation.StartDate.Format("02-01-2006")
+		stringMap["end_date"] = reservation.EndDate.Format("02-01-2006")
 
 		render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
-			Form: form,
-			Data: data,
+			StringMap: stringMap,
+			Form:      form,
+			Data:      data,
 		})
 		return
 	}
