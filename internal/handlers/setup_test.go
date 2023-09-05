@@ -108,7 +108,7 @@ func getRoutes() http.Handler {
 	mux.Get("/admin/reservations-new", Repo.AdminNewReservations)
 	mux.Get("/admin/reservations-all", Repo.AdminAllReservations)
 	mux.Get("/admin/reservations-calendar", Repo.AdminReservationsCalendar)
-	mux.Post("/admin/reservations-calendar", Repo.PostAdminReservationsCalendar)
+	mux.Post("/admin/reservations-calendar", Repo.AdminPostReservationsCalendar)
 
 	mux.Get("/admin/reservations/{src}/{id}/show", Repo.AdminShowReservation)
 	mux.Post("/admin/reservations/{src}/{id}", Repo.AdminPostShowReservation)

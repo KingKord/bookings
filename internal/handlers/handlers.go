@@ -733,8 +733,8 @@ func (m *Repository) AdminDeleteReservation(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-// PostAdminReservationsCalendar handles post of reservation calendar
-func (m *Repository) PostAdminReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+// AdminPostReservationsCalendar handles post of reservation calendar
+func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		helpers.ServerError(w, err)
