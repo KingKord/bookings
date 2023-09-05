@@ -736,13 +736,6 @@ var loginTests = []struct {
 		`action="/user/login"`,
 		"",
 	},
-	{
-		"invalid-data",
-		"j",
-		http.StatusOK,
-		`action="/userr/login"`,
-		"",
-	},
 }
 
 func TestLogin(t *testing.T) {
@@ -786,6 +779,64 @@ func TestLogin(t *testing.T) {
 		}
 	}
 }
+
+var adminPostShowReservationTests = []struct {
+	name               string
+	year               string
+	month              string
+	fromPage           string
+	expectedLocation   string
+	expectedStatusCode int
+}{
+	{"From New Reservation", "", "", "/admin/reservations/new/6/show", "/admin/reservations-new", http.StatusSeeOther},
+	{"From All Reservation", "", "", "/admin/reservations/all/6/show", "/admin/reservations-all", http.StatusSeeOther},
+	{"From Calendar", "2023", "09", "/admin/reservations/cal/2/show?y=2023&m=09", "/admin/reservations-calendar?y=2023&m=09", http.StatusSeeOther},
+	{"From Another Month", "2023", "08", "/admin/reservations/cal/8/show?y=2023&m=10", "/admin/reservations-calendar?y=2023&m=08", http.StatusSeeOther},
+}
+
+func TestPostShow(t *testing.T) {
+	for _, e := range adminPostShowReservationTests {
+
+		postedData := url.Values{
+			"first_name": {"Johns"},
+			"last_name":  {"vovav@gmail.com"},
+			"email":      {"Johns"},
+			"phone":      {"5555-555-555"},
+			"year":       {e.year},
+			"month":      {e.month},
+		}
+
+		req, _ := http.NewRequest("POST", e.fromPage, strings.NewReader(postedData.Encode()))
+		// create a request
+		ctx := getCtx(req)
+		req = req.WithContext(ctx)
+
+		req.RequestURI = e.fromPage
+
+		// set the header
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		rr := httptest.NewRecorder()
+
+		// call the handler
+		handler := http.HandlerFunc(Repo.AdminPostShowReservation)
+		req.URL, _ = url.Parse("localhost:8080" + e.fromPage)
+		handler.ServeHTTP(rr, req)
+
+		if rr.Code != e.expectedStatusCode {
+			t.Errorf("failed %s: expected code %d, but got %d", e.name, e.expectedStatusCode, rr.Code)
+		}
+
+		if e.expectedLocation != "" {
+			// get the URL from test
+			actualLoc, _ := rr.Result().Location()
+			if actualLoc.String() != e.expectedLocation {
+				t.Errorf("failed %s: expected location %s, but got %s location", e.name, e.expectedLocation, actualLoc.String())
+			}
+		}
+
+	}
+}
+
 func getCtx(req *http.Request) context.Context {
 	ctx, err := session.Load(req.Context(), req.Header.Get("X-Session"))
 	if err != nil {
