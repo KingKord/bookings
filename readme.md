@@ -25,6 +25,14 @@ go build -o bookings ./cmd/web/ && ./bookings \
 -dbname=bookings \
 -dbuser=tcs
 ```
+If you use windows type this from the root level of application
+```
+go build -o bookings.exe ./cmd/web
+```
+Fill the required flags to connect to a database
+```
+.\bookings.exe -dbname=bookings -dbuser=postgres -dbpass=
+```
 where you have the correct entries for your database name (dbName)
 and database user (dbUser)
 For the full list of command flags, run ./bookings -h
