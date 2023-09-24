@@ -1,3 +1,4 @@
 .idea
 
 migrations/schema.sql
+/db-data/postgres

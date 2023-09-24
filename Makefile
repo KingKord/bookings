@@ -28,3 +28,5 @@ stop:
 	@echo "Stopping app..."
 	@-pkill -SIGTERM -f "./bookingApp"
 	@echo "Stopped app!"
+
+restart: down up_build up
