@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+#  bookings:
+#    build:
+#      context: .
+#      dockerfile: ./dockerfiles/bookings.dockerfile
+#    restart: always
+#    ports:
+#      - "8080:8080"
+#    deploy:
+#      mode: replicated
+#      replicas: 1
+
+  postgres:
+    image: 'postgres:14.0'
+    ports:
+      - "5432:5432"
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bookings
+    volumes:
+      - ./db-data/postgres/:/var/lib/postgresql/data/
+
+  mailhog:
+    image: 'jcalonso/mailhog:latest'
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    deploy:
+      mode: replicated
+      replicas: 1
+
